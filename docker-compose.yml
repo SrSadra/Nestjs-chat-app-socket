@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  api:
+    build: "Dockerfile"
+    context: ./
+    target: development #only build this image from dockerfile
+    # volumes reflect changes in local machine to container directory and vise versa
+    volumes:
+      - ./:/chat-nest/src/app
+      - ./chat-nest/src/app/node_modules #anonymus volume
+    command: npm run start:dev
