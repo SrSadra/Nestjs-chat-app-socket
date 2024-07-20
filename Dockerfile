@@ -1,8 +1,11 @@
+#this dockerfile is multistage
 FROM node:14 AS development
 
 WORKDIR /chat-nest/src/app
 
 COPY package*.json ./
+COPY tsconfig.json ./ 
+#this is important to include
 
 RUN npm install
 
@@ -19,7 +22,7 @@ ENV NODE_ENV=${NODE_ENV}
 # Set work dir
 WORKDIR /chat-nest/src/app
 
-COPY --from=development /chat-nest .
+COPY --from=development /chat-nest/src/app .
 
 EXPOSE 3000
 
