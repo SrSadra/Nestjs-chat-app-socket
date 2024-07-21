@@ -16,6 +16,8 @@ services:
     environment:
         DATABASE_URL: postgres://user:password@postgres:5432/db
         NODE_ENV: development
+        SALT: 10
+        JWT_SECRET: FDFDV$V$v43v3v3434434F4343V33XE
         PORT: 3000 #this is env variable
     ports:
       - 3000:3000
