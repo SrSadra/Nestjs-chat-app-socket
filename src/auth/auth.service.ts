@@ -7,13 +7,13 @@ import * as bcrypt from 'bcrypt'
 export class AuthService {
     constructor(private readonly jwt : JwtService){}
 
-    hashPassword(pass : string){
-        const salt = process.env.SALT;
-        return bcrypt.hash(pass, salt);
+    async hashPassword(pass : string){
+        const salt = Number(process.env.SALT); // type of env variable is always string!
+        return await bcrypt.hash(pass, salt);
     }
 
-    comparePassword(original : string , hashed : string){
-        return bcrypt.compare(original, hashed);
+    async comparePassword(original : string , hashed : string){
+        return await bcrypt.compare(original, hashed);
     }
 
     async jwtSign(email : string , userId : number): Promise<string>{

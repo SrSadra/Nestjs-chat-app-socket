@@ -1,4 +1,5 @@
-import { Body, Controller, Post } from "@nestjs/common";
+import { Body, Controller, Post, Res } from "@nestjs/common";
+import { Response } from "express";
 import { createUser } from "src/dtos/createuser.dto";
 import { loginUser } from "src/dtos/loginuser.dto";
 import { UserService } from "./user.service";
@@ -15,9 +16,11 @@ export class UserController{
         return await this.userSer.createUser(createDto);
     }
 
-    @Post()
-    async loginUser(@Body() loginDto : loginUser){
-        return await this.userSer.login(loginDto);
+    @Post("signin")
+    async loginUser(@Body() loginDto : loginUser, @Res({passthrough: true}) res : Response){ //passthrough is important!
+        const token = await this.userSer.login(loginDto);
+        res.cookie("cookieSession" , token , { expires : new Date(Date.now() + 3600000)}); // remember for logout
+        return token;
     }
 
 

@@ -13,13 +13,15 @@ export class UserService {
 
     async createUser(dto : createUser){
         try{
-            const exist = this.mailExists(dto.email);
+            const exist = await this.mailExists(dto.email);
+            console.log(exist);
             if (!exist){
-                const hashed = this.authService.hashPassword(dto.password);
-                const user = this.userRepo.create({
+                const hashed = await this.authService.hashPassword(dto.password);
+                console.log(hashed);
+                const user = await this.userRepo.create({
                     email : dto.email,
                     username : dto.username,
-                    password : dto.password
+                    password : hashed
                 });
                 await this.userRepo.save(user);
                 return user;

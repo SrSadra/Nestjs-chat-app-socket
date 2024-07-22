@@ -3,27 +3,29 @@ version: '3.8'
 services:
   api:
     build:
+      context: .
       dockerfile: Dockerfile
-      context: ./ # path that include docker file
-      target: development #only build this image from dockerfile
-      # volumes reflect changes in local machine to container directory and vise versa
+      target: development
     volumes:
-      - ./:/chat-nest/src/app
-      - /chat-nest/src/app/node_modules #anonymus volume
+      - .:/chat-nest/src/app
+      - /chat-nest/src/app/node_modules/ # anonymous volume to avoid overriding node_modules
     command: npm run start:dev
     depends_on:
       - postgres
     environment:
-        DATABASE_URL: postgres://user:password@postgres:5432/db
-        NODE_ENV: development
-        SALT: 10
-        JWT_SECRET: FDFDV$V$v43v3v3434434F4343V33XE
-        PORT: 3000 #this is env variable
+      DATABASE_URL: postgres://user:password@postgres:5432/db
+      HOST: db
+      PASSWORD_SQL: password
+      PORT_SQL: 5432
+      USERNAME_SQL: user
+      NODE_ENV: development
+      SALT: 10
+      JWT_SECRET: FDFDV$V$v43v3v3434434F4343V33XE
+      PORT: 3000
     ports:
       - 3000:3000
       - 9229:9229
 
-   # Our Postgres Database for NestJS to connect to
   postgres:
     image: postgres:10.4
     environment:
@@ -33,9 +35,8 @@ services:
     ports:
       - 35000:5432
     
-  # The Postgres Admin tool if we want to run some custom queries and so on against our Database  
   postgres_admin:
-    image: dpage/pgadmin4:4.28 #This image is a pre-built Docker image for pgAdmin 4, a web-based administration tool for PostgreSQL.
+    image: dpage/pgadmin4:4.28
     depends_on:
       - postgres
     environment:
@@ -43,4 +44,3 @@ services:
       PGADMIN_DEFAULT_PASSWORD: password
     ports:
       - 5050:80
-

@@ -5,6 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
   imports: [
@@ -12,11 +13,16 @@ import { AuthModule } from './auth/auth.module';
     TypeOrmModule.forRoot({
       type : "postgres",
       url : process.env.DATABASE_URL,
+      // host : process.env.HOST,
+      // password : process.env.PASSWORD_SQL,
+      // port : Number(process.env.PORT_SQL),
+      // username : process.env.USERNAME_SQL,
       autoLoadEntities : true,
       synchronize : true
     }),
     UserModule,
-    AuthModule
+    AuthModule,
+    PassportModule.register({session : false})
   ],
   controllers: [AppController],
   providers: [AppService],

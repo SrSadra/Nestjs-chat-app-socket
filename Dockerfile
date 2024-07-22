@@ -1,30 +1,32 @@
-#this dockerfile is multistage
-FROM node:14 AS development
+# Use a multi-stage build to create a production-ready build
+FROM node:20 AS development
 
 WORKDIR /chat-nest/src/app
 
-COPY package*.json ./
-COPY tsconfig.json ./ 
-#this is important to include
+# Copy package.json and package-lock.json to the working directory
+COPY package.json package-lock.json ./
 
+# Install dependencies
 RUN npm install
 
+# # Copy the rest of the application code
+# COPY . .
+
+# Build the application
 RUN npm run build
 
-EXPOSE 3000
-
-# produciton is name of image
-FROM node:14 AS production
+# Define the production stage
+FROM node:20 AS production
 
 ARG NODE_ENV=production
 ENV NODE_ENV=${NODE_ENV}
 
-# Set work dir
 WORKDIR /chat-nest/src/app
 
+# Copy built application from development stage
 COPY --from=development /chat-nest/src/app .
 
 EXPOSE 3000
 
-# run app
+# Run the application
 CMD [ "node", "dist/main"]
