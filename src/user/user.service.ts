@@ -4,7 +4,7 @@ import { AuthService } from "src/auth/auth.service";
 import { createUser } from "src/dtos/createuser.dto";
 import { loginUser } from "src/dtos/loginuser.dto";
 import { UserModel } from "src/models/user.model";
-import { Repository } from "typeorm";
+import { Like, Repository } from "typeorm";
 
 @Injectable()
 export class UserService {
@@ -38,7 +38,7 @@ export class UserService {
 
     async login(userDto : loginUser){
         try{
-            const user = await this.userRepo.findOne({where : {email : userDto.email}});
+            const user = await this.userRepo.findOne({where : {email : userDto.email}, select: ['id', 'email', 'username', 'password'] });
             if (user){
                 const matched = this.authService.comparePassword(userDto.password, user.password);
                 if (matched){
@@ -59,6 +59,15 @@ export class UserService {
     }
 
 
+    async findAllByUsername(username: string) {
+        return await this.userRepo.find({
+          where: {
+            username: Like(`%${username.toLowerCase()}%`)
+          }
+        })
+      }
+
+
     private async mailExists(email: string): Promise<boolean> {
         const user = await this.userRepo.findOne({where : {email}});
         if (user) {
@@ -67,4 +76,8 @@ export class UserService {
           return false;
         }
       }
+
+    public async getUserByid(id : number){
+        return this.userRepo.findOneOrFail({where : {id}})
+    }
 }

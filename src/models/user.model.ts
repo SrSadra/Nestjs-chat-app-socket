@@ -1,4 +1,5 @@
-import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { BeforeInsert, Column, Entity, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
+import { roomModel } from "./room.model";
 
 @Entity()
 export class UserModel {
@@ -14,6 +15,9 @@ export class UserModel {
 
     @Column({nullable : false, select : false}) // select to false will help us not to extract password wit other properties from db
     password : string;
+
+    @ManyToMany(() => roomModel , room => room.users)
+    rooms: roomModel[];
 
     @BeforeInsert()
     emailToLowerCase(){

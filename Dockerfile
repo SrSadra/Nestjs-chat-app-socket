@@ -9,8 +9,8 @@ COPY package.json package-lock.json ./
 # Install dependencies
 RUN npm install
 
-# # Copy the rest of the application code
-# COPY . .
+# Copy the rest of the application code
+COPY . .
 
 # Build the application
 RUN npm run build
@@ -28,5 +28,6 @@ COPY --from=development /chat-nest/src/app .
 
 EXPOSE 3000
 
-# Run the application
+# # Run the application
 CMD [ "node", "dist/main"]
+# CMD [ "npm", "run", "start:dev" ]

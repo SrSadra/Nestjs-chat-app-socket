@@ -8,6 +8,9 @@ npm install passport passport-jwt jsonwebtoken
 npm install @nestjs/jwt
 npm install --save @nestjs/passport passport  passport-jwt
 npm i --save-dev @types/passport-jwt
+npm i --save @nestjs/websockets @nestjs/platform-socket.io
+npm i nestjs-typeorm-paginate //for pagination option
+
 
 for cookie
 $ npm i cookie-parser

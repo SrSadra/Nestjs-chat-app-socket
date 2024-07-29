@@ -7,8 +7,9 @@ services:
       dockerfile: Dockerfile
       target: development
     volumes:
+      # - .:/chat-nest/src/app
       - .:/chat-nest/src/app
-      - /chat-nest/src/app/node_modules/ # anonymous volume to avoid overriding node_modules
+      # - /chat-nest/src/app/node_modules/ # anonymous volume to avoid overriding node_modules
     command: npm run start:dev
     depends_on:
       - postgres

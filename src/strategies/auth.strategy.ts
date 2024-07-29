@@ -1,3 +1,4 @@
+import { ConfigService } from "@nestjs/config";
 import { PassportStrategy } from "@nestjs/passport";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Request } from "express";
@@ -7,14 +8,14 @@ import { Repository } from "typeorm";
 
 
 export class jwtStrategy extends PassportStrategy(Strategy, "jwt"){
-    constructor(@InjectRepository(UserModel) private readonly userRep : Repository<UserModel>){
+    constructor(@InjectRepository(UserModel) private readonly userRep : Repository<UserModel>, private readonly config : ConfigService){
         super({
             jwtFromRequest:  ExtractJwt.fromExtractors([
                 jwtStrategy.ExtractJwtCookie, // this finds token from cookie if exist if not it goes to second func
                 ExtractJwt.fromAuthHeaderAsBearerToken(),
               ]),
             ignoreExpiration: false,
-            secretOrKey : process.env.JWT_SECRET
+            secretOrKey : config.get("JWT_SECRET")
         })
     }
 
