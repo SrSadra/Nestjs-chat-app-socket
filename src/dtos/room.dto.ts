@@ -6,6 +6,7 @@ export interface roomDto {
     name: string;
     description?: string;
     users: createUser[];
+    // admins: createUser[];
     created_at?: Date;
     updated_at?: Date;
 }

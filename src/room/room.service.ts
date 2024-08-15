@@ -2,7 +2,7 @@ import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { createUser } from 'src/dtos/createuser.dto';
 import { roomDto } from 'src/dtos/room.dto';
-import { roomModel } from 'src/models/room.model';
+import { RoomModel } from 'src/models/room.model';
 import { Repository } from 'typeorm';
 import {IPaginationOptions, paginate, Pagination} from "nestjs-typeorm-paginate" // its important to know
 import { UserModel } from 'src/models/user.model';
@@ -10,7 +10,7 @@ import { UserModel } from 'src/models/user.model';
 @Injectable()
 export class RoomService {
 
-    constructor(@InjectRepository(roomModel) private roomRep : Repository<roomModel>, @InjectRepository(UserModel) private userRep : Repository<UserModel>){}
+    constructor(@InjectRepository(RoomModel) private roomRep : Repository<RoomModel>, @InjectRepository(UserModel) private userRep : Repository<UserModel>){}
 
 
     async create(room : roomDto, creator : createUser){
@@ -27,8 +27,22 @@ export class RoomService {
         console.log(rooms);
         room.users.push(creator);
         creator.rooms?.push(room);
+        await this.userRep.save(creator);
+        return await this.roomRep.save(room);
+    }
+
+    async update(room : roomDto, newMember : createUser){
+        room.users.push(newMember);
         await this.roomRep.save(room);
-        return await this.userRep.save(creator);
+    }
+
+    async updateDelete(room : roomDto, user: UserModel){
+        room.users = room.users.filter(obj =>  obj !== user);
+        await this.roomRep.save(room);
+    }
+
+    async getRoomById(roomId : number){
+        return await this.roomRep.findOne({where : {id: roomId} , relations : ["user"]}); // check this
     }
 
     getRoomsByUserId(userId : number , option : IPaginationOptions){
@@ -50,4 +64,5 @@ export class RoomService {
         .leftJoinAndSelect('room.users', 'all_users')
         .orderBy('room.updated_at', 'DESC').execute();
     }
+
 }

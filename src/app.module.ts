@@ -9,6 +9,8 @@ import { PassportModule } from '@nestjs/passport';
 import { AuthMiddleware } from './middleware/auth.middleware';
 import { ChatModule } from './chat/chat.module';
 import { RoomModule } from './room/room.module';
+import { ConnectedUserModule } from './connected-user/connected-user.module';
+import { MessageModule } from './message/message.module';
 
 @Module({
   imports: [
@@ -42,7 +44,9 @@ import { RoomModule } from './room/room.module';
     AuthModule,
     PassportModule.register({session : false}),
     ChatModule,
-    RoomModule
+    RoomModule,
+    ConnectedUserModule,
+    MessageModule
   ],
   controllers: [AppController],
   providers: [AppService],
